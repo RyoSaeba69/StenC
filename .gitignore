@@ -27,3 +27,11 @@
 *.i*86
 *.x86_64
 *.hex
+
+# Fichiers générés
+stenC
+lex.yy.c
+stenC.c
+y.tab.c
+y.tab.h
+lex.yy.c
