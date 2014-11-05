@@ -35,3 +35,6 @@ stenC.c
 y.tab.c
 y.tab.h
 lex.yy.c
+
+#Fichier apple
+.DS_Store

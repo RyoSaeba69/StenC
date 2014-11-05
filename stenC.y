@@ -8,10 +8,30 @@
 	int yyerror();
 %}
 
+%union{
+	int entier;
+	char* ident;
+}
 
+%token STENCIL /* stencil*/
+%token ENTIER /* [0-9]+*/
+%token IDENTIFICATEUR /* */
+
+%type <entier> ENTIER
+%type <ident> IDENTIFICATEUR
+	
 %%
 	
-axiom: ;
+axiom: stencil '\n';
+
+stencil: STENCIL IDENTIFICATEUR '=' tableau;
+
+tableau: '{' entier_liste '}';
+
+entier_liste: ENTIER 
+			  |
+			  ENTIER ',' entier_liste 
+			  ;
 
 %%
 
