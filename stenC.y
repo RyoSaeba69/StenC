@@ -22,7 +22,7 @@
 	
 %%
 	
-axiom: stencil '\n';
+axiom: stencil '\n' {printf("Stencil reconnu ");};
 
 stencil: STENCIL IDENTIFICATEUR '=' tableau;
 
