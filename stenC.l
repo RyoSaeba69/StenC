@@ -4,7 +4,7 @@
 	#include "y.tab.h"
 	#include "code.h"
 %}
-/*identificateur [a-zA-Z]+\{[0-9]\,[0-9]\}*/
+identificateur_stencil [a-zA-Z]+\{[0-9]\,[0-9]\}
 identificateur [a-zA-Z]+
 prepro ^[ \t\n]*(#[^ ]*[ ]+)
 blank [ \t\n]+
@@ -37,6 +37,11 @@ entier [0-9]+
 {identificateur}	{
 					yylval.ident = yytext;
 					return IDENTIFICATEUR;
+					}
+
+{identificateur_stencil}	{
+					yylval.ident = yytext;
+					return IDENTIFICATEUR_STENCIL;
 					}
 
 {commentaire} {}

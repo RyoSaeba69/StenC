@@ -16,12 +16,14 @@
 %token STENCIL /* stencil*/
 %token ENTIER /* [0-9]+*/
 %token IDENTIFICATEUR /* */
+%token IDENTIFICATEUR_STENCIL /* */
 %token INT /* int */
 %token MOINSMOINS
 %token PLUSPLUS
 
 %type <entier> ENTIER
 %type <ident> IDENTIFICATEUR
+%type <ident> IDENTIFICATEUR_STENCIL
 
 
 %%
@@ -33,7 +35,7 @@ declaration_var : stencil ';'
 				  | entier_var ';'
 				;
 
-stencil: STENCIL IDENTIFICATEUR '=' tableau
+stencil: STENCIL IDENTIFICATEUR_STENCIL '=' tableau
 			;
 
 entier_var: entier_int
