@@ -16,6 +16,7 @@ symbol* symbol_gen(char* identifier, bool isconstant, int value){
 		sprintf(str_number, "%d", next_tmp);
 		strcat(tmp_name, str_number);
 		new_symbol->identifier = strdup(tmp_name);
+		next_tmp++;
 	} else {
 		new_symbol->identifier = strdup(identifier);
 	}
