@@ -1,9 +1,10 @@
-#include "quad.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "quad.h"
+#include "quad_op.h"
 
-quad* quad_gen(/*int* label,*/ char op, symbol* arg1, symbol* arg2, symbol* res){
+quad* quad_gen(/*int* label,*/ enum quad_op op, symbol* arg1, symbol* arg2, symbol* res){
 
 	static int next_label = 0;
 
@@ -28,15 +29,7 @@ void quad_free(quad* q){
 	while(next_quad != NULL){
 
 		next_quad = q->next;
-
-		free(q->label);
-		free(q->op);
-		free(q->arg1);
-		free(q->arg2);
-		free(q->res);
-		free(q->next);
 		free(q);
-
 		q = next_quad;
 	}
 }
@@ -45,7 +38,7 @@ void quad_print(quad* q){
 
 	printf("=== Display Quad ====\n");
 	while(q != NULL){
-		printf("Quad: label : %d || op : %c|| res : %d \n", q->label, q->op, q->res);
+		printf("Quad: label : %d || op : %s || arg1: %s || value : %d\n", q->label, quad_op_to_str(q->op), q->arg1->identifier, q->res->value);
 		q = q->next;
 	}
 	printf("=== End Quad \n");
@@ -101,8 +94,8 @@ void quad_list_complete(struct quad_list* list, struct symbol* label){
 }
 
 void quad_list_complete_label(struct quad_list* list, int label, symbol** symbol_list){
-	symbol* new_symbol = symbol_add("temp_quad", false, label, symbol_list);
-	quad_list_complete(list, new_symbol);
+	//symbol* new_symbol = symbol_add("temp_quad", false, label, symbol_list);
+	//quad_list_complete(list, new_symbol);
 }
 
 void quad_list_print(quad_list* list){
@@ -113,5 +106,29 @@ void quad_list_print(quad_list* list){
 		list = list->next;
 	}
 	printf("=== End Quad list ===\n");
+
+}
+
+
+void gen_mips(quad* quads_list){
+	printf("=======MIPS CODE========\n");
+	struct quad* current_quad = quads_list;
+
+	while(current_quad != NULL){
+		switch(current_quad->op){
+
+			case ASSIGNMENT:
+				printf("%s := %d", current_quad->arg1->identifier, current_quad->res->value);
+			break;
+
+			default:
+				printf("[MIPS] UNKNOWN OP");
+			break;
+
+		}
+		printf("\n");
+		current_quad = current_quad->next;
+	}
+
 
 }
