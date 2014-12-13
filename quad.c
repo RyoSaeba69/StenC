@@ -38,7 +38,11 @@ void quad_print(quad* q){
 
 	printf("=== Display Quad ====\n");
 	while(q != NULL){
-		printf("Quad: label : %d || op : %s || arg1: %d || res : %s\n", q->label, quad_op_to_str(q->op), q->arg1->value, q->res->identifier);
+		printf("Quad: label : %d || op : %s || arg1: %d", q->label, quad_op_to_str(q->op), q->arg1->value);
+		if(q->arg2 != NULL){
+			printf("|| arg2 : %d", q->arg2->value);
+		}
+		printf(" || res : %s\n", q->res->identifier);
 		q = q->next;
 	}
 	printf("=== End Quad \n");
