@@ -13,6 +13,7 @@ enum quad_op{
 
 char* quad_op_to_str(enum quad_op);
 
+int make_operation(enum quad_op, int arg1, int arg2);
 
 
 

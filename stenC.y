@@ -32,6 +32,7 @@
 %type <string> declaration_var
 %type <qop> operators
 %type <ptr_symbol> expression;
+%type <ptr_symbol> list_expressions;
 
 %%
 
@@ -47,7 +48,6 @@ instruction: declaration_var {printf("AN INSTRUCTION \n");}
 			;
 
 declaration_var : type_specifier IDENTIFIER {
-					printf("A DECLARATION \n");
 					if(find_symbol(symbols_table, $2) != NULL){
 						printf("ERROR ==> %s already declared ! \n", $2);
 						exit(0);
@@ -90,7 +90,7 @@ assignment_expression : declaration_var '=' INTEGER {
 							symbol* var_symbol = find_symbol(symbols_table, $1);
 							var_symbol->value = $3;
 							symbol* integer_symbol = symbol_add(&symbols_table, NULL, true, $3);
-							quad* new_quad = quad_gen(Q_ASSIGNMENT, var_symbol, NULL, integer_symbol);
+							quad* new_quad = quad_gen(Q_ASSIGNMENT, integer_symbol, NULL, var_symbol);
 							quad_add(&quads_list, new_quad);
 
 						}
@@ -103,18 +103,36 @@ assignment_expression : declaration_var '=' INTEGER {
 						}
 							var_symbol->value = $3;
 							symbol* integer_symbol = symbol_add(&symbols_table, NULL, true, $3);
-							quad* new_quad = quad_gen(Q_ASSIGNMENT, var_symbol, NULL, integer_symbol);
+							quad* new_quad = quad_gen(Q_ASSIGNMENT, integer_symbol, NULL, var_symbol);
 							quad_add(&quads_list, new_quad);
 					  }
-					  | declaration_var '=' expression
-					  | IDENTIFIER '=' expression
+					  | declaration_var '=' expression {
+							symbol* var_symbol = find_symbol(symbols_table, $1);
+
+							quad* new_quad = quad_gen(Q_ASSIGNMENT, $3, NULL, var_symbol);
+							quad_add(&quads_list, new_quad);
+
+					  }
+					  | IDENTIFIER '=' expression {
+							symbol* var_symbol = find_symbol(symbols_table, $1);
+
+							if(var_symbol == NULL){
+								printf("ERROR ==> %s never declared ! \n", $1);
+								exit(0);
+							}
+							quad* new_quad = quad_gen(Q_ASSIGNMENT, $3, NULL, var_symbol);
+							quad_add(&quads_list, new_quad);
+					  }
 					  ;
 					
 operators: '+' {$$ = Q_PLUS;}| '-' {$$ = Q_MINUS;}| '*' {$$ = Q_MULTIPLY;}| '/' {$$ = Q_DIVIDE;}
 		;
 
-expression: IDENTIFIER operators IDENTIFIER{
+list_expressions : expression { $$ = $1;}
+				  | expression list_expressions
+				  ;
 
+expression: IDENTIFIER operators IDENTIFIER{
 				symbol* id_symbol1 = find_symbol(symbols_table, $1);
 				
 				if(id_symbol1 == NULL){
@@ -126,29 +144,30 @@ expression: IDENTIFIER operators IDENTIFIER{
 				if(id_symbol2 == NULL){
 					printf("ERROR==> %s never declared !", $3);
 				}
-
-				quad* new_quad = quad_gen($2, id_symbol1, id_symbol2, id_symbol2);
+				symbol* tmp_sym =  symbol_add(&symbols_table, NULL, false, make_operation($2, id_symbol1->value, id_symbol2->value));
+				quad* new_quad = quad_gen($2, id_symbol1, id_symbol2, tmp_sym);
 				quad_add(&quads_list, new_quad);
-
+				$$ = tmp_sym;
 			}
 			| IDENTIFIER operators INTEGER{
 				symbol* id_symbol = find_symbol(symbols_table, $1);
-				
 				if(id_symbol == NULL){
 					printf("ERROR==> %s never declared !", $1);
 				}
-				
 				symbol* integer_symbol = symbol_add(&symbols_table, NULL, true, $3);
-				quad* new_quad = quad_gen($2, id_symbol, integer_symbol, integer_symbol);
+				symbol* tmp_sym =  symbol_add(&symbols_table, NULL, false, make_operation($2,id_symbol->value, $3));
+				quad* new_quad = quad_gen($2, id_symbol, integer_symbol, tmp_sym);
 				quad_add(&quads_list, new_quad);
-
+				$$ = tmp_sym;
 			}
 			| INTEGER operators INTEGER{
 				
 				symbol* integer_symbol1 = symbol_add(&symbols_table, NULL, true, $1);
 				symbol* integer_symbol2 = symbol_add(&symbols_table, NULL, true, $3);
-				quad* new_quad = quad_gen($2, integer_symbol1, integer_symbol2, integer_symbol2);
+				symbol* tmp_sym =  symbol_add(&symbols_table, NULL, false, make_operation($2, $1, $3));
+				quad* new_quad = quad_gen($2, integer_symbol1, integer_symbol2, tmp_sym);
 				quad_add(&quads_list, new_quad);
+				$$ = tmp_sym;
 			}
 			| INTEGER operators IDENTIFIER{
 				symbol* id_symbol = find_symbol(symbols_table, $3);
@@ -157,9 +176,11 @@ expression: IDENTIFIER operators IDENTIFIER{
 					printf("ERROR==> %s never declared !", $3);
 				}
 				
+				symbol* tmp_sym =  symbol_add(&symbols_table, NULL, false, make_operation($2, $1, id_symbol->value));
 				symbol* integer_symbol = symbol_add(&symbols_table, NULL, true, $1);
-				quad* new_quad = quad_gen($2, integer_symbol, id_symbol, id_symbol);
+				quad* new_quad = quad_gen($2, integer_symbol, id_symbol, tmp_sym);
 				quad_add(&quads_list, new_quad);
+				$$ = tmp_sym;
 			}
 			;
 %%

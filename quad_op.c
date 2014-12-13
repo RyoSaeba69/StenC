@@ -23,3 +23,23 @@ char* quad_op_to_str(enum quad_op op){
 			break;
 	}
 }
+
+int make_operation(enum quad_op op, int arg1, int arg2){
+	switch(op){
+		case Q_PLUS:
+			return arg1 + arg2;
+			break;
+		case Q_MINUS:
+			return arg1 - arg2;
+			break;
+		case Q_DIVIDE:
+			return arg1 / arg2;
+			break;
+		case Q_MULTIPLY:
+			return arg1 * arg2;
+			break;
+		default:
+			return 0;
+			break;
+	}
+}

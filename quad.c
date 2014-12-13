@@ -38,7 +38,7 @@ void quad_print(quad* q){
 
 	printf("=== Display Quad ====\n");
 	while(q != NULL){
-		printf("Quad: label : %d || op : %s || arg1: %s || value : %d\n", q->label, quad_op_to_str(q->op), q->arg1->identifier, q->res->value);
+		printf("Quad: label : %d || op : %s || arg1: %d || res : %s\n", q->label, quad_op_to_str(q->op), q->arg1->value, q->res->identifier);
 		q = q->next;
 	}
 	printf("=== End Quad \n");
@@ -118,7 +118,7 @@ void gen_mips(quad* quads_list){
 		switch(current_quad->op){
 
 			case Q_ASSIGNMENT:
-				printf("%s := %d", current_quad->arg1->identifier, current_quad->res->value);
+				printf("%s := %d",  current_quad->res->identifier, current_quad->arg1->value);
 			break;
 
 			default:
