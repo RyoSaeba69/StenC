@@ -1,5 +1,5 @@
 LEX = lex
-YACC = yacc -d
+YACC = yacc -d -v
 CC = gcc
 #SRC = quad.c quad.h symbol.h
 

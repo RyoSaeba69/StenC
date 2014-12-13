@@ -2,6 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
+	#include "quad_op.h"
 	#include "y.tab.h"
 %}
 
@@ -13,7 +14,15 @@ integer [0-9]+
 "int" { return INT;}
 "=" {return '=';}
 ";" {return ';';}
-
+"[" {return '[';}
+"]" {return ']';}
+"{" {return '{';}
+"}" {return '}';}
+"," {return ',';}
+"+" {return '+';};
+"-" {return '-';};
+"/" {return '/';};
+"*" {return '*';};
 
 {integer} {
 	yylval.integer = atoi(yytext);

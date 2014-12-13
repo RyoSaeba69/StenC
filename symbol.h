@@ -3,7 +3,13 @@
 
 #include <stdbool.h>
 
+enum s_type {
+	S_INT,
+	S_INT_ARRAY
+};
+
 typedef struct symbol {
+	enum s_type symbol_type;
 	char* identifier;
 	bool isconstant;
 	int value;

@@ -117,7 +117,7 @@ void gen_mips(quad* quads_list){
 	while(current_quad != NULL){
 		switch(current_quad->op){
 
-			case ASSIGNMENT:
+			case Q_ASSIGNMENT:
 				printf("%s := %d", current_quad->arg1->identifier, current_quad->res->value);
 			break;
 
