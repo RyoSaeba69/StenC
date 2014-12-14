@@ -30,8 +30,8 @@
 %type <integer> INTEGER
 %type <string> IDENTIFIER
 %type <string> declaration_var
-%type <qop> operators
 %type <ptr_symbol> expression;
+%type <ptr_symbol> variable;
 
 
 %right '=' /* a = b = c // On fait d abord b = c puis a = b donc right */
@@ -110,32 +110,7 @@ assignment_expression : declaration_var '=' expression {
 					  }
 					  ;
 					
-operators: '+' {$$ = Q_PLUS;}| '-' {$$ = Q_MINUS;}| '*' {$$ = Q_MULTIPLY;}| '/' {$$ = Q_DIVIDE;}
-		;
-
-expression:  IDENTIFIER operators expression{
-				symbol* id_symbol = find_symbol(symbols_table, $1);
-
-				if(id_symbol == NULL){
-					printf("ERROR==> %s never declared !", $1);
-				}
-
-				$$ = symbol_add(&symbols_table, NULL, false, make_operation($2, id_symbol->value, $3->value));
-				$$->value =  make_operation($2, id_symbol->value, $3->value);
-				quad* new_quad = quad_gen($2, id_symbol, $3, $$);
-				quad_add(&quads_list, new_quad);
-			}
-			| INTEGER operators expression{
-				symbol* integer_sym = symbol_add(&symbols_table, NULL, false, $1);
-				$$ = symbol_add(&symbols_table, NULL, false, make_operation($2, $1, $3->value));
-				quad* new_quad = quad_gen($2, integer_sym, $3, $$);
-				quad_add(&quads_list, new_quad);
-			}
-			| INTEGER {
-				symbol* tmp_sym = symbol_add(&symbols_table, NULL, true, $1);
-				$$ = tmp_sym;
-			}
-			| IDENTIFIER{
+variable: IDENTIFIER {
 				symbol* id_symbol = find_symbol(symbols_table, $1);
 
 				if(id_symbol == NULL){
@@ -143,6 +118,40 @@ expression:  IDENTIFIER operators expression{
 				}
 
 				$$ = id_symbol;
+
+		}
+		| INTEGER {
+			symbol* tmp_sym = symbol_add(&symbols_table, NULL, true, $1);
+			$$ = tmp_sym;
+		};
+
+expression:  expression '+' expression{
+				$$ = symbol_add(&symbols_table, NULL, false, make_operation(Q_PLUS, $1->value, $3->value));
+				$$->value =  make_operation(Q_PLUS, $1->value, $3->value);
+				quad* new_quad = quad_gen(Q_PLUS, $1, $3, $$);
+				quad_add(&quads_list, new_quad);
+			}
+			|expression '-' expression{
+				$$ = symbol_add(&symbols_table, NULL, false, make_operation(Q_MINUS, $1->value, $3->value));
+				$$->value =  make_operation(Q_MINUS, $1->value, $3->value);
+				quad* new_quad = quad_gen(Q_MINUS, $1, $3, $$);
+				quad_add(&quads_list, new_quad);
+			}
+			| expression '*' expression{
+				$$ = symbol_add(&symbols_table, NULL, false, make_operation(Q_MULTIPLY, $1->value, $3->value));
+				$$->value =  make_operation(Q_MULTIPLY, $1->value, $3->value);
+				quad* new_quad = quad_gen(Q_MULTIPLY, $1, $3, $$);
+				quad_add(&quads_list, new_quad);
+			}
+			|expression '/' expression{
+				$$ = symbol_add(&symbols_table, NULL, false, make_operation(Q_DIVIDE, $1->value, $3->value));
+				$$->value =  make_operation(Q_DIVIDE, $1->value, $3->value);
+				quad* new_quad = quad_gen(Q_DIVIDE, $1, $3, $$);
+				quad_add(&quads_list, new_quad);
+			}
+
+			| variable {
+				$$ = $1;
 			}
 			;
 %%
