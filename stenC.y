@@ -121,7 +121,10 @@ variable: IDENTIFIER {
 
 		}
 		| INTEGER {
+			symbol* tmp_sym2 = symbol_add(&symbols_table, NULL, true, $1);
 			symbol* tmp_sym = symbol_add(&symbols_table, NULL, true, $1);
+			quad* new_quad = quad_gen(Q_ASSIGNMENT, tmp_sym2, NULL, tmp_sym);
+			quad_add(&quads_list, new_quad);
 			$$ = tmp_sym;
 		};
 

@@ -116,21 +116,51 @@ void quad_list_print(quad_list* list){
 
 void gen_mips(quad* quads_list){
 	printf("=======MIPS CODE========\n");
+
+    printf("\t.text\n");	
 	struct quad* current_quad = quads_list;
 
 	while(current_quad != NULL){
 		switch(current_quad->op){
-
 			case Q_ASSIGNMENT:
-				printf("%s := %d",  current_quad->res->identifier, current_quad->arg1->value);
-			break;
+				printf("\tla $a0,%s\n", current_quad->res->identifier);
+			    printf("\tli $v0 %s\n", current_quad->arg1->identifier);
+			    printf("\tsw $t0 $a0");
+				break;
+
+			case Q_PLUS:
+				printf("\tlw $t1,%s \n",current_quad->arg1->identifier); 
+				printf("\tlw $t2,%s \n",current_quad->arg2->identifier); 
+				printf("\tadd $t0,$t1,$t2\n");
+				printf("\tsw $t0, %s",current_quad->res->identifier);
+				break;
+
+			case Q_MINUS:
+				printf("\tlw $t1,%s\n", current_quad->arg1->identifier);
+				printf("\tlw $t2,%s\n",current_quad->arg2->identifier);
+				printf("\tsub $t0,$t1,$t2\n");
+				printf("\tsw $t0 ,%s",current_quad->res->identifier);
+				break;
+
+			case Q_DIVIDE:
+				 printf("\tlw $t1,%s\n",current_quad->arg1->identifier);
+				printf("\tlw $t2,%s\n",current_quad->arg2->identifier);
+				printf("\tdiv $t0,$t1,$t2\n");
+				printf("\tsw $t0 ,%s",current_quad->res->identifier);
+				break;
+
+			case Q_MULTIPLY:
+				printf("\tlw $t1,%s\n",current_quad->arg1->identifier);
+				printf("\tlw $t2,%s\n",current_quad->arg2->identifier);
+				printf("\tmul $t0,$t1,$t2\n");
+				printf("\tsw $t0, %s",current_quad->res->identifier);
+				break;
 
 			default:
-				printf("[MIPS] UNKNOWN OP");
-			break;
-
+				//printf("[MIPS] UNKNOWN OP");
+				break;
 		}
-		printf("\n");
+		printf("==== END MIPS ========\n");
 		current_quad = current_quad->next;
 	}
 
