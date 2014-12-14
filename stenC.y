@@ -125,7 +125,7 @@ variable: IDENTIFIER {
 			$$ = tmp_sym;
 		};
 
-expression:  expression '+' expression{
+expression: expression '+' expression{
 				$$ = symbol_add(&symbols_table, NULL, false, make_operation(Q_PLUS, $1->value, $3->value));
 				$$->value =  make_operation(Q_PLUS, $1->value, $3->value);
 				quad* new_quad = quad_gen(Q_PLUS, $1, $3, $$);
@@ -149,7 +149,9 @@ expression:  expression '+' expression{
 				quad* new_quad = quad_gen(Q_DIVIDE, $1, $3, $$);
 				quad_add(&quads_list, new_quad);
 			}
-
+			| '(' expression ')' {
+				$$ = $2;
+			}
 			| variable {
 				$$ = $1;
 			}
