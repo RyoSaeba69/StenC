@@ -18,6 +18,12 @@ char* quad_op_to_str(enum quad_op op){
 		case Q_MULTIPLY:
 			return "Q_MULTIPLY";
 			break;
+		case Q_GOTO:
+			return "Q_GOTO";
+			break;
+		case Q_NOOP:
+			return "Q_NOOP";
+			break;
 		default:
 			return "UKNOWN";
 			break;

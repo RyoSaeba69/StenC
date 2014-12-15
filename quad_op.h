@@ -8,7 +8,9 @@ enum quad_op{
 	Q_PLUS,
 	Q_MINUS,
 	Q_DIVIDE,
-	Q_MULTIPLY
+	Q_MULTIPLY,
+	Q_GOTO,
+	Q_NOOP
 };
 
 char* quad_op_to_str(enum quad_op);
