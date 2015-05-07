@@ -1,8 +1,8 @@
 StenC
 =====
 
-Compilateur StenC.
+StenC compiler.
 
-Pour compiler le projet lancer la commande make.
+To compile run the make command.
 
-Un exécutable "stenC" est créé, le lancer avec ./stenC.
+A "stenC" binary is created, run it with ./stenC.
